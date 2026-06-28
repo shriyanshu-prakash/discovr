@@ -1,18 +1,22 @@
 import { useState, useCallback } from 'react'
-import Navbar from './components/Navbar.jsx'
-import Footer from './components/Footer.jsx'
-import Home from './pages/Home.jsx'
-import { searchArtist } from './services/spotifyService.js'
+import { searchArtist } from '../services/spotifyService.js'
 
-function App() {
+/**
+ * useDiscography
+ * Encapsulates all search + state logic for an artist's discography.
+ * Can be used in any component that needs search functionality.
+ *
+ * @returns {{ artist, albums, loading, error, hasSearched, search }}
+ */
+export function useDiscography() {
   const [artist, setArtist] = useState(null)
   const [albums, setAlbums] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [hasSearched, setHasSearched] = useState(false)
 
-  const handleSearch = useCallback(async (query) => {
-    if (!query.trim()) return
+  const search = useCallback(async (query) => {
+    if (!query?.trim()) return
 
     setLoading(true)
     setError(null)
@@ -31,20 +35,5 @@ function App() {
     }
   }, [])
 
-  return (
-    <>
-      <Navbar />
-      <Home
-        onSearch={handleSearch}
-        artist={artist}
-        albums={albums}
-        loading={loading}
-        error={error}
-        hasSearched={hasSearched}
-      />
-      <Footer />
-    </>
-  )
+  return { artist, albums, loading, error, hasSearched, search }
 }
-
-export default App
